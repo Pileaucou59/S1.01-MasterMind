@@ -73,7 +73,7 @@ def afficherChoixCouleur(f:pygame.Surface)->None:
     pygame.display.update()
 
 def distance(a:list,b:list)->float:
-    #code a ecrire
+    return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
     return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
 
 def getChoixCouleur()->None:
