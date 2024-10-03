@@ -1,4 +1,6 @@
 import random
+from operator import indexOf
+
 import mm
 import pygame
 
@@ -9,7 +11,6 @@ def prog() -> None:
     secret : list = creerCombinaisonSecrete()
     mm.afficherPlateau(screen)
     mm.afficherChoixCouleur(screen)
-    mm.afficherSecret(screen, secret)
     while True :
         count += 1
         mm.getChoixCouleur()
@@ -17,12 +18,9 @@ def prog() -> None:
         boole = afficherVictoire(secret, a, screen, count)
         mm.afficherCombinaison(screen, a, count)
         mm.afficherResultat(screen, tuples(a, secret), count)
-        if not boole:
-            pass
 
-            exit()
-
-
+        if determinerVictoire(secret, a):
+            afficherVictoire(secret, a, screen, count)
 
 
 
@@ -32,23 +30,21 @@ def determinerVictoire(secret: list, a: list)-> bool:
         return True
     return False
 
-def afficherVictoire(secret : list, a : list, screen : pygame.surface, count : int)-> bool:
+def afficherVictoire(secret : list, a : list, screen : pygame.surface, count : int)-> None:
     if determinerVictoire(secret, a):
         msg: str = 'Vous avez gagnez !'
-        message = pygame.font.SysFont('monospace', 25)
+        message = pygame.font.SysFont('monospace', 20)
         message.set_bold(True)
         label = message.render(msg, 1, mm.Noir)
         screen.blit(label, (250, 700))
-        return False
+        mm.afficherSecret(screen, secret)
     elif count == 16:
         msg: str = "Vous avez perdue !"
-        message = pygame.font.SysFont('monospace', 25)
+        message = pygame.font.SysFont('monospace', 20)
         message.set_bold(True)
         label = message.render(msg, 1, 30)
         screen.blit(label, (250, 700))
-        return False
-    else:
-        return True
+        mm.afficherSecret(screen, secret)
 
 def creerScreen() -> pygame.display:
     pygame.init()
@@ -59,18 +55,23 @@ def creerScreen() -> pygame.display:
 def creerCombinaisonSecrete() -> list:
     secret : list = []
     i : int
-    for i in range(5):
+    for _ in range(5):
         i = random.randint(1, 6)
         secret.append(mm.TabCouleur[i])
     return secret
 
 def tuples(a,b) -> tuple:
-    count : int = 0
+    countGood : int = 0
+    countBad : int = 0
     i : int
+
     for i in range(len(a)):
-        if a[i] == b[i]:
-            count += 1
-    return (count, i - count)
+        if a[i] in b and a[i] != b[i]:
+            countBad += 1
+        elif a[i] == b[i]:
+            countGood += 1
+    print(countGood,countBad)
+    return (countGood,countBad)
 
 
 
