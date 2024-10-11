@@ -1,5 +1,7 @@
 import random
 import sys
+from itertools import count
+
 import mm
 import pygame
 import doctest
@@ -15,7 +17,6 @@ def prog() -> None:
 
     # Initialisation des variables
     count = 1
-    boole = True
     screen: pygame.display = creerScreen()
     secret: list = creerCombinaisonSecrete()
     mm.afficherPlateau(screen)
@@ -30,7 +31,6 @@ def prog() -> None:
                 sys.exit()
         count += 1
         a: list = mm.construireProposition(screen, count)
-        boole = afficherVictoire(secret, a, screen, count)
         victory: bool = afficherVictoire(secret, a, screen, count)
         mm.afficherResultat(screen, tuples(a, secret), count)
 
@@ -131,42 +131,47 @@ def creerCombinaisonSecrete() -> list:
     for _ in range(5):
         i = random.randint(1, 6)
         secret.append(mm.TabCouleur[i])
+    # print(secret)
     return secret
 
 
 # Fonction nb bien placé / nb mal placé
-def tuples(a, b) -> tuple:
+def tuples(a,secret) -> tuple:
     """
     Permet de déterminer le nombre de bien placé et de mal placé
     :param a:
-    :param b:
+    :param secret:
     :return: tuple
 
-    >>> tuples([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+    >>> tuples([1, 2, 3, 4, 5],[1, 2, 3, 4, 5])
     (5, 0)
-    >>> tuples([1, 2, 3, 4, 5], [1, 2, 3, 4, 6])
+    >>> tuples([1, 2, 3, 4, 5],[1, 2, 3, 4, 6])
     (4, 0)
-    >>> tuples([1, 2, 3, 4, 5], [2, 1, 3, 4, 5])
+    >>> tuples([1, 2, 3, 4, 5],[2, 1, 3, 4, 5])
     (3, 2)
-    >>> tuples([1, 2, 3, 4, 5], [1, 1, 6, 6, 6])
+    >>> tuples([1, 2, 3, 4, 5],[1, 1, 6, 6, 6])
     (1, 0)
     """
 
     countGood: int = 0
     countBad: int = 0
-    i: int
+    counts: dict = {}
 
-    for i in range(len(a)):
-        # Compte ceux au même endroit et de même couleur
-        if a[i] == b[i]:
+    for i in secret:
+        if i not in counts:
+            counts[i] = 0
+        counts[i] += 1
+
+    for i,j in zip(a, secret):
+        if i == j:
             countGood += 1
+            counts[i] -= 1
 
-        # Compte ceux qui sont similaire mais pas au bon endroit
-        elif a[i] in b and a[i] != b[i]:
+    for i in a:
+        if i in counts and counts[i] > 0:
             countBad += 1
+            counts[i] -= 1
 
-        if a[i - 1] == a[i]:
-            countBad -= 1
 
     return (countGood, countBad)
 
