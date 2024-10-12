@@ -33,10 +33,9 @@ def prog() -> None:
 
         while not victory:
             count += 1
-            if not victory:
-                a: list = mm.construireProposition(screen, count)
-                victory: bool = afficherVictoire(secret, a, screen, count)
-                mm.afficherResultat(screen, tuples(a, secret), count)
+            a: list = mm.construireProposition(screen, count)
+            victory: bool = afficherVictoire(secret, a, screen, count)
+            mm.afficherResultat(screen, tuples(a, secret), count)
 
             if victory:
                 # Affiche la combinaison secréte en cas de victoire
@@ -140,7 +139,7 @@ def creerCombinaisonSecrete() -> list:
 
 
 # Fonction nb bien placé / nb mal placé
-def tuples(a,secret) -> tuple:
+def tuples(a, secret) -> tuple:
     """
     Permet de déterminer le nombre de bien placé et de mal placé
     :param a:
@@ -166,7 +165,7 @@ def tuples(a,secret) -> tuple:
             counts[i] = 0
         counts[i] += 1
 
-    for i,j in zip(a, secret):
+    for i, j in zip(a, secret):
         if i == j:
             countGood += 1
             counts[i] -= 1
@@ -175,7 +174,6 @@ def tuples(a,secret) -> tuple:
         if i in counts and counts[i] > 0:
             countBad += 1
             counts[i] -= 1
-
 
     return (countGood, countBad)
 
