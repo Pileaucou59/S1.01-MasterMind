@@ -22,6 +22,7 @@ def prog() -> None:
     mm.afficherPlateau(screen)
     mm.afficherChoixCouleur(screen)
     mm.afficherSecret(screen, secret)
+    victory: bool = False
 
     # Tant que le jeu est en cours
     while True:
@@ -29,14 +30,17 @@ def prog() -> None:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        count += 1
-        a: list = mm.construireProposition(screen, count)
-        victory: bool = afficherVictoire(secret, a, screen, count)
-        mm.afficherResultat(screen, tuples(a, secret), count)
 
-        if victory:
-            # Affiche la combinaison secréte en cas de victoire
-            mm.afficherCombinaison(screen, a, count)
+        while not victory:
+            count += 1
+            if not victory:
+                a: list = mm.construireProposition(screen, count)
+                victory: bool = afficherVictoire(secret, a, screen, count)
+                mm.afficherResultat(screen, tuples(a, secret), count)
+
+            if victory:
+                # Affiche la combinaison secréte en cas de victoire
+                mm.afficherCombinaison(screen, a, count)
 
 
 # Détermine le résultat de la partie
