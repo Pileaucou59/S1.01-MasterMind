@@ -21,7 +21,6 @@ def prog() -> None:
     secret: list = creerCombinaisonSecrete()
     mm.afficherPlateau(screen)
     mm.afficherChoixCouleur(screen)
-    mm.afficherSecret(screen, secret)
     victory: bool = False
 
     # Tant que le jeu est en cours
@@ -40,6 +39,9 @@ def prog() -> None:
             if victory:
                 # Affiche la combinaison secréte en cas de victoire
                 mm.afficherCombinaison(screen, a, count)
+                mm.afficherSecret(screen, secret)
+
+
 
 
 # Détermine le résultat de la partie
